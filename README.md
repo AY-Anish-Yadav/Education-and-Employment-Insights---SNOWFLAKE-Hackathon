@@ -53,25 +53,25 @@ The insights were visualized and shared via a **Streamlit application**, which w
 
 ## Features Implementation:
 
-- [ ] Use **internal/external stages** in Snowflake to load raw data.
+- [x] Use **internal/external stages** in Snowflake to load raw data.
 
-- [ ] Use **SnowSQL** for loading data into Snowflake.
+- [x] Use **SnowSQL** for loading data into Snowflake.
 
-- [ ] Load data from **AWS S3** into Snowflake as an external stage.
+- [x] Load data from **AWS S3** into Snowflake as an external stage.
 
-- [ ] Use **SQL Worksheet** to query and manage data.
+- [x] Use **SQL Worksheet** to query and manage data.
 
-- [ ] Use **Python Worksheet** to write Snowpark Python scripts for EDA.
+- [x] Use **Python Worksheet** to write Snowpark Python scripts for EDA.
     
-- [ ] Build a **Streamlit app** to display insights and trends derived from Snowflake.
+- [x] Build a **Streamlit app** to display insights and trends derived from Snowflake.
 
 - [ ] **Dynamic Tables and Task Scheduling**:  
   Use Snowflake’s dynamic tables and task scheduling to automate the update of insights with the latest data.
   
-- [ ] **Logs and Latency Checks**:  
+- [x] **Logs and Latency Checks**:  
   Implement logging to track and minimize query latency for efficient data processing.
   
-- [ ] **Data Quality - Data Cleaning**:  
+- [x] **Data Quality - Data Cleaning**:  
   Clean the data by removing duplicates, fixing missing values, and ensuring accuracy.
   
 - [ ] **Performance Optimization**:  
@@ -80,7 +80,7 @@ The insights were visualized and shared via a **Streamlit application**, which w
 - [ ] **Change Data Capture (CDC) Pipeline**:  
   Integrate a CDC pipeline to monitor source data changes and keep the analysis updated.
 
-- [ ] **Integration of Snowflake Marketplace into Existing Pipeline**:  
+- [x] **Integration of Snowflake Marketplace into Existing Pipeline**:  
     Enrich your existing data pipeline by integrating external datasets from the Snowflake Marketplace, merging them with the current analysis to provide deeper insights and comparisons.
 
 ---
