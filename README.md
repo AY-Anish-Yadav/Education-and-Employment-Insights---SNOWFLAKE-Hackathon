@@ -1,4 +1,4 @@
-# Education and Employment Insights - Snowflake Hackathon
+# Education and Employment Insights - SNOWFLAKE Hackathon
 
 ## Project Overview
 
