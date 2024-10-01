@@ -1,0 +1,50 @@
+-- Create the Health_Hygiene database
+CREATE DATABASE Health_Hygiene;
+
+-- Create a schema named health_data within the Health_Hygiene database
+CREATE SCHEMA health_data;
+
+-- Create a warehouse named my_warehouse with specified size and auto suspend/resume settings
+CREATE WAREHOUSE my_warehouse
+WITH
+    WAREHOUSE_SIZE = 'XSMALL',    -- Warehouse size (can be XSMALL, SMALL, MEDIUM, etc.)
+    AUTO_SUSPEND = 300,           -- Suspend the warehouse after 5 minutes of inactivity (300 seconds)
+    AUTO_RESUME = TRUE;           -- Automatically resume warehouse when required
+
+-- Set the current warehouse, database, and schema for the session
+USE WAREHOUSE my_warehouse;
+USE DATABASE Health_Hygiene;
+USE SCHEMA health_data;
+
+-- Create or replace a local stage to upload files
+CREATE OR REPLACE STAGE my_local_stage;  -- Staging area for file uploads (local stage for data import)
+
+-- (Uncomment the following line to display all stages in the current database)
+-- SHOW STAGES;
+
+-- SnowSQL command to log into Snowflake, specifying account, username, database, and schema
+-- Replace "gpirevt-cq15708" and "ANISHYADAV" with your account and username
+-- snowsql -a gpirevt-cq15708 -u ANISHYADAV -d Health_Hygiene -s health_data
+
+-- Upload the CSV file from local system to the stage
+-- PUT file://C:/task/datafile.csv @my_local_stage;  -- Upload file to stage for loading into the table
+
+-- Create the health_hygiene_data table to store health and hygiene data
+CREATE OR REPLACE TABLE health_hygiene_data (
+    financial_year STRING,        -- Financial year
+    ihhl_bpl INT,                 -- Individual Household Latrines (Below Poverty Line)
+    ihhl_apl INT,                 -- Individual Household Latrines (Above Poverty Line)
+    total_ihhl INT,               -- Total Individual Household Latrines
+    school_toilets INT,           -- School toilets count
+    sanitary_complexes INT,       -- Sanitary complexes count
+    anganwadi_toilets INT         -- Anganwadi (childcare center) toilets count
+);
+
+-- Load data from the CSV file in the stage into the health_hygiene_data table
+COPY INTO health_hygiene_data
+FROM @my_local_stage/datafile.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1);
+
+-- Select all rows from the health_hygiene_data table to verify the data
+SELECT * FROM health_hygiene_data;
+HEALTH_HYGIENE.HEALTH_DATA.MY_USER_STAGE

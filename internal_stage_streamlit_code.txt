@@ -1,0 +1,36 @@
+# Import python packages
+import streamlit as st
+from snowflake.snowpark.context import get_active_session
+import pandas as pd
+session = get_active_session()
+df = session.table("HEALTH_HYGIENE_DATA")
+
+# Assuming you have the data in a DataFrame `df`
+st.title("Health and Hygiene Data Insights")
+
+# Display the DataFrame
+st.write("Data Overview:")
+st.dataframe(df.to_pandas())
+
+financial_year_col = "FINANCIAL_YEAR"  
+# Calculate total IHHL over the years
+total_ihhl = df.group_by(financial_year_col).agg({"TOTAL_IHHL": "sum"}).sort(financial_year_col)
+
+# Find insights
+insights = {
+    "max_bpl": df.agg({"IHHL_BPL": "max"}).collect()[0][0],
+    "max_apl": df.agg({"IHHL_APL": "max"}).collect()[0][0],
+    "max_total_ihhl": df.agg({"Total_IHHL": "max"}).collect()[0][0],
+    "min_bpl": df.agg({"IHHL_BPL": "min"}).collect()[0][0],
+    "min_apl": df.agg({"IHHL_APL": "min"}).collect()[0][0],
+    "min_total_ihhl": df.agg({"Total_IHHL": "min"}).collect()[0][0],
+}
+
+# Display insights
+st.write("Insights:")
+st.json(insights)
+
+# Visualizations
+st.subheader("Total_IHHL Over Years")
+st.bar_chart(total_ihhl.to_pandas().set_index(financial_year_col))
+

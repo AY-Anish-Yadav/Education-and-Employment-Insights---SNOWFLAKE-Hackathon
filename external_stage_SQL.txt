@@ -1,0 +1,145 @@
+-- Create an S3 storage integration for Snowflake to access the S3 bucket
+CREATE OR REPLACE STORAGE INTEGRATION my_s3_integration
+  TYPE = EXTERNAL_STAGE
+  STORAGE_PROVIDER = S3
+  ENABLED = TRUE
+  STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::281378814359:role/SDL_role'
+  STORAGE_ALLOWED_LOCATIONS = ('s3://sdl-24-09/School Education Statistics/');
+
+-- Verify the storage integration
+DESCRIBE INTEGRATION my_s3_integration;
+
+-- Set up the Snowflake warehouse and schema for data storage and querying
+USE WAREHOUSE my_warehouse;
+USE DATABASE school_education_statistics;
+USE SCHEMA statistics_data;
+
+-- Create a stage to reference the S3 bucket location for file uploads
+CREATE OR REPLACE STAGE my_s3_stage
+  URL = 's3://sdl-24-09/School Education Statistics/'
+  STORAGE_INTEGRATION = my_s3_integration
+
+-- Create table for DOR.csv
+CREATE OR REPLACE TABLE dor_data (
+  State_UT STRING,
+  year STRING,
+  Primary_Boys FLOAT,
+  Primary_Girls FLOAT,
+  Primary_Total FLOAT,
+  Upper_Primary_Boys FLOAT,
+  Upper_Primary_Girls FLOAT,
+  Upper_Primary_Total FLOAT,
+  Secondary_Boys FLOAT,
+  Secondary_Girls FLOAT,
+  Secondary_Total FLOAT,
+  HrSecondary_Boys FLOAT,
+  HrSecondary_Girls FLOAT,
+  HrSecondary_Total FLOAT
+);
+
+-- Create table for GER_1.csv
+CREATE OR REPLACE TABLE ger_data (
+  State_UT STRING,
+  Year STRING,
+  Primary_Boys FLOAT,
+  Primary_Girls FLOAT,
+  Primary_Total FLOAT,
+  Upper_Primary_Boys FLOAT,
+  Upper_Primary_Girls FLOAT,
+  Upper_Primary_Total FLOAT,
+  Secondary_Boys FLOAT,
+  Secondary_Girls FLOAT,
+  Secondary_Total FLOAT,
+  Higher_Secondary_Boys FLOAT,
+  Higher_Secondary_Girls FLOAT,
+  Higher_Secondary_Total FLOAT
+);
+
+-- Create table for school_with_btoilet.csv
+CREATE OR REPLACE TABLE school_with_btoilet (
+  State_UT STRING,
+  year STRING,
+  Primary_Only FLOAT,
+  Primary_with_U_Primary FLOAT,
+  Primary_with_U_Primary_Sec_HrSec FLOAT,
+  U_Primary_Only FLOAT,
+  U_Primary_With_Sec_HrSec FLOAT,
+  Primary_with_U_Primary_Sec FLOAT,
+  U_Primary_With_Sec FLOAT,
+  Sec_Only FLOAT,
+  Sec_with_HrSec FLOAT,
+  HrSec_Only FLOAT,
+  All_Schools FLOAT
+);
+
+-- Create table for school_with_gtoilet.csv
+CREATE OR REPLACE TABLE school_with_gtoilet (
+  State_UT STRING,
+  year STRING,
+  Primary_Only FLOAT,
+  Primary_with_U_Primary FLOAT,
+  Primary_with_U_Primary_Sec_HrSec FLOAT,
+  U_Primary_Only FLOAT,
+  U_Primary_With_Sec_HrSec FLOAT,
+  Primary_with_U_Primary_Sec FLOAT,
+  U_Primary_With_Sec FLOAT,
+  Sec_Only FLOAT,
+  Sec_with_HrSec FLOAT,
+  HrSec_Only FLOAT,
+  All_Schools FLOAT
+);
+
+-- Create table for school_with_water.csv
+CREATE OR REPLACE TABLE school_with_water (
+  State_UT STRING,
+  Year STRING,
+  Primary_Only FLOAT,
+  Primary_with_U_Primary FLOAT,
+  Primary_with_U_Primary_Sec_HrSec FLOAT,
+  U_Primary_Only FLOAT,
+  U_Primary_With_Sec_HrSec FLOAT,
+  Primary_with_U_Primary_Sec FLOAT,
+  U_Primary_With_Sec FLOAT,
+  Sec_Only FLOAT,
+  Sec_with_HrSec FLOAT,
+  HrSec_Only FLOAT,
+  All_Schools FLOAT
+);
+
+
+-- Load data from DOR.csv
+COPY INTO dor_data
+FROM @my_s3_stage/DOR.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+
+-- Load data from GER_1.csv
+COPY INTO ger_data
+FROM @my_s3_stage/GER_1.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+
+-- Load data from school_with_btoilet.csv
+COPY INTO school_with_btoilet
+FROM @my_s3_stage/schools_with_btoilet.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+
+-- Load data from school_with_gtoilet.csv
+COPY INTO school_with_gtoilet
+FROM @my_s3_stage/schools_with_gtoilet.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+
+-- Load data from school_with_water.csv
+COPY INTO school_with_water
+FROM @my_s3_stage/schools_with_water_1.csv
+FILE_FORMAT = (TYPE = 'CSV' FIELD_OPTIONALLY_ENCLOSED_BY = '"' SKIP_HEADER = 1)
+ON_ERROR = 'CONTINUE';
+
+-- -- Query the loaded data
+SELECT * FROM dor_data LIMIT 10;
+SELECT * FROM ger_data LIMIT 10;
+SELECT * FROM school_with_btoilet LIMIT 10;
+SELECT * FROM school_with_gtoilet LIMIT 10;
+SELECT * FROM school_with_water LIMIT 10;
