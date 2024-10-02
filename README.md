@@ -11,6 +11,11 @@ This project analyzes education and infrastructure trends in India using Snowfla
 ## Datasets Used:
 1. **Physical Progress of the Total Sanitation Campaign During the Eleventh Plan (2007-08 to 2011-12)**
 2. **School Education Statistics (2013-2016)**
+   a. GER Data
+   b. Boy's Toilet Information
+   c. Girls Toilet Information
+   d. Water Availability Information
+   e. Drop-out Information
 
 Both datasets were sourced from the [Open Government Data Platform India](https://data.gov.in).
 
